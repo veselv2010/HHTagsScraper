@@ -14,7 +14,7 @@ namespace HHTagsScraper
             _dialogManager = dialogManager;
         }
 
-        public void SaveTags(string path, IDictionary<String, IEnumerable<String>> tags)
+        public void SaveTags(string path, IEnumerable<Video> tags)
         {
             if (!Directory.Exists(path)) throw new IOException();
 

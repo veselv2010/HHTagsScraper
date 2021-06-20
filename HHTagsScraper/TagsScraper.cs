@@ -24,10 +24,10 @@ namespace HHTagsScraper
 
             _dialogManager = dialogManager;
         }
-        public async Task<IDictionary<string, IEnumerable<string>>> getTags(
+        public async Task<IEnumerable<Video>> GetTags(
             IEnumerable<string> folderNames)
         {
-            var nameWithTags = new Dictionary<string, IEnumerable<string>>();
+            var nameWithTags = new List<Video>();
             _dialogManager.ShowStartRequestsMessage();
 
             foreach(var name in folderNames)
@@ -40,10 +40,10 @@ namespace HHTagsScraper
 
                 var tags = getExtractedTags(htmlText);
 
-                if (!tags.Any() || tags == null)
+                if (tags == null || !tags.Any())
                     continue;
 
-                nameWithTags.Add(name, tags);
+                nameWithTags.Add(new Video { Name = name, Tags = tags });
             }
 
             return nameWithTags;
@@ -63,7 +63,7 @@ namespace HHTagsScraper
             }
         }
 
-        private IEnumerable<string> getExtractedTags(string html)
+        private IEnumerable<Tag> getExtractedTags(string html)
         {
             var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(html);
@@ -72,7 +72,7 @@ namespace HHTagsScraper
                     .Where(node => node.GetAttributeValue("class", "")
                     .Contains("tags-links-single is_exclusive"));
 
-            if(tags.Count() != 1)
+            if (tags.Count() != 1)
             {
                 return null;
             }
@@ -81,7 +81,7 @@ namespace HHTagsScraper
 
             htmlDoc.LoadHtml(tagsHtml);
             return htmlDoc.DocumentNode.Descendants("a")
-                .Select((x) => x.InnerText).ToList();
+                .Select((x) => new Tag { Title = x.InnerText });
         }
 
         private string getUrl(string name)

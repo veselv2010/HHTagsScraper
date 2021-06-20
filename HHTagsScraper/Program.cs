@@ -23,7 +23,7 @@ namespace HHTagsScraper
 
             var names = dirInfoResolver.GetFolderNames();
 
-            var tags = tagsScraper.getTags(names).Result;
+            var tags = tagsScraper.GetTags(names).Result;
 
             tagsSaver.SaveTags(path, tags);
             dialogManager.ShowEndMessage(tags.Count(), names.Count());
